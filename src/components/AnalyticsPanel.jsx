@@ -34,8 +34,8 @@ const AnalyticsPanel = ({ predictionData }) => {
   }
 
   return (
-    <div className="w-80 h-screen bg-slate-900 border-l border-slate-800 text-white p-6 flex flex-col overflow-y-auto shadow-2xl z-10">
-      <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+    <div className="w-full h-full overflow-y-auto bg-slate-900 text-white p-4 md:border-l border-slate-700 custom-scrollbar">
+      <h2 className="text-xl font-bold mb-4 text-emerald-400">
         <TrendingUp className="text-blue-400" /> Ringkasan Analitik
       </h2>
 

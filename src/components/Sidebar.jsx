@@ -23,10 +23,10 @@ const Sidebar = ({ onPredict }) => {
   };
 
   return (
-    <div className="w-80 h-screen bg-slate-900 text-white p-6 flex flex-col shadow-2xl overflow-y-auto">
+    <div className="w-full h-full overflow-y-auto bg-slate-900 text-white p-4 md:border-r border-slate-700 custom-scrollbar">
       <div className="flex items-center gap-3 mb-8">
         <Activity className="text-blue-400 w-8 h-8" />
-        <h2 className="text-2xl font-bold">Flood<span className="text-blue-400">Priority</span></h2>
+        <h2 className="text-xl font-bold mb-4 text-blue-400">Flood<span className="text-blue-400">Priority</span></h2>
       </div>
 
       <form onSubmit={handleSubmit} className="flex-1 flex flex-col gap-5">

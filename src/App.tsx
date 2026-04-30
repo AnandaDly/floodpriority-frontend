@@ -54,6 +54,7 @@ const App: React.FC = () => {
   const [predictionData, setPredictionData] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [showRadar, setShowRadar] = useState<boolean>(false);
+  const [mobileTab, setMobileTab] = useState<'sidebar' | 'map' | 'analytics'>('map');
 
   useEffect(() => {
     // Parsing data GeoJSON
@@ -102,36 +103,78 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex w-full h-screen overflow-hidden font-sans">
-      <Sidebar onPredict={handlePredict} />
-
-      <div className="flex-1 relative">
-        <div className="absolute top-4 right-4 z-10 flex gap-2">
-          <button
-            onClick={() => setShowRadar(!showRadar)}
-            className={`px-4 py-2 rounded-full font-bold shadow-lg transition-all ${
-              showRadar
-                ? 'bg-blue-600 text-white border-2 border-blue-400'
-                : 'bg-slate-800 text-slate-300 border-2 border-slate-700'
-            }`}
-          >
-            {showRadar ? '🛰️ Matikan Radar Hujan' : '📡 Lihat Radar Hujan'}
-          </button>
-        </div>
-        {loading && (
-          <div className="absolute inset-0 bg-slate-900/50 z-50 flex items-center justify-center backdrop-blur-sm">
-            <div className="text-white text-xl font-bold animate-pulse">AI Sedang Menganalisis...</div>
-          </div>
-        )}
+    // Kita kembalikan ke h-screen dan overflow-hidden agar tidak bisa di-scroll kelewatan
+    <div className="flex flex-col md:flex-row w-full h-screen overflow-hidden font-sans bg-slate-950">
+      
+      {/* AREA KONTEN UTAMA */}
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
         
-        <MapContainer
-          geojsonData={mapData}
-          predictionData={predictionData}
-          showRadar={showRadar}
-        />
+        {/* SIDEBAR: Muncul jika tab 'sidebar' aktif (di HP), atau selalu muncul di Laptop (md:block) */}
+        <div className={`${mobileTab === 'sidebar' ? 'block w-full' : 'hidden'} md:block md:w-80 h-full shrink-0 z-20`}>
+          <Sidebar onPredict={handlePredict} />
+        </div>
+
+        {/* PETA: Muncul jika tab 'map' aktif (di HP), atau selalu muncul di Laptop (md:block) */}
+        <div className={`${mobileTab === 'map' ? 'block w-full' : 'hidden'} md:block flex-1 relative h-full z-10`}>
+          <div className="absolute top-4 right-4 z-50 flex gap-2">
+            <button
+              onClick={() => setShowRadar(!showRadar)}
+              className={`px-3 py-2 text-sm md:text-base md:px-4 md:py-2 rounded-full font-bold shadow-lg transition-all ${
+                showRadar
+                  ? 'bg-blue-600 text-white border-2 border-blue-400'
+                  : 'bg-slate-800 text-slate-300 border-2 border-slate-700'
+              }`}
+            >
+              {showRadar ? '🛰️ Matikan' : '📡 Radar'}
+            </button>
+          </div>
+          
+          {loading && (
+            <div className="absolute inset-0 bg-slate-900/60 z-50 flex items-center justify-center backdrop-blur-sm">
+              <div className="text-white text-lg md:text-xl font-bold animate-pulse">AI Sedang Menganalisis...</div>
+            </div>
+          )}
+          
+          <MapContainer
+            geojsonData={mapData}
+            predictionData={predictionData}
+            showRadar={showRadar}
+          />
+        </div>
+
+        {/* ANALITIK: Muncul jika tab 'analytics' aktif (di HP), atau selalu muncul di Laptop (md:block) */}
+        <div className={`${mobileTab === 'analytics' ? 'block w-full' : 'hidden'} md:block md:w-80 h-full shrink-0 z-20`}>
+          <AnalyticsPanel predictionData={predictionData} />
+        </div>
       </div>
 
-      <AnalyticsPanel predictionData={predictionData} />
+      {/* BOTTOM NAVIGATION (HANYA MUNCUL DI HP) */}
+      <div className="md:hidden w-full bg-slate-900 border-t border-slate-700 flex justify-around items-center p-2 shrink-0 z-50 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.3)]">
+        <button 
+          onClick={() => setMobileTab('sidebar')}
+          className={`flex flex-col items-center p-2 rounded-lg transition-all ${mobileTab === 'sidebar' ? 'text-blue-400 font-bold' : 'text-slate-400'}`}
+        >
+          <span className="text-xl mb-1">⚙️</span>
+          <span className="text-xs">Parameter</span>
+        </button>
+        
+        <button 
+          onClick={() => setMobileTab('map')}
+          className={`flex flex-col items-center p-2 rounded-lg transition-all ${mobileTab === 'map' ? 'text-blue-400 font-bold' : 'text-slate-400'}`}
+        >
+          <span className="text-xl mb-1">🗺️</span>
+          <span className="text-xs">Peta</span>
+        </button>
+        
+        <button 
+          onClick={() => setMobileTab('analytics')}
+          className={`flex flex-col items-center p-2 rounded-lg transition-all ${mobileTab === 'analytics' ? 'text-blue-400 font-bold' : 'text-slate-400'}`}
+        >
+          <span className="text-xl mb-1">📈</span>
+          <span className="text-xs">Analitik</span>
+        </button>
+      </div>
+
     </div>
   );
 };
