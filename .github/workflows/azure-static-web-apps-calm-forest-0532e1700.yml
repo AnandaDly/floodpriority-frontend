@@ -56,3 +56,6 @@ jobs:
         uses: Azure/static-web-apps-deploy@v1
         with:
           action: "close"
+        env:
+          VITE_API_URL: "https://api-floodpriority-medan-fyg5eufueueub7g0.southeastasia-01.azurewebsites.net"
+          VITE_AZURE_MAPS_KEY: ${{ secrets.AZURE_MAPS_KEY }}
